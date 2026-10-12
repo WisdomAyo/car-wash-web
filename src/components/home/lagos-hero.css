@@ -1,0 +1,153 @@
+.lagos-hero {
+  --lagos-sky-top: #d6e9ef;
+  --lagos-sky-bottom: #f2e8d8;
+  --lagos-cloud: #fff7e8;
+  --lagos-sun: #f0c778;
+  --lagos-haze: #a8c0c4;
+  --lagos-water-light: #81b2bb;
+  --lagos-water: #4e8f9f;
+  --lagos-water-line: #c5e3e7;
+  --lagos-building: #72939e;
+  --lagos-building-light: #c2d3d3;
+  --lagos-window: #407082;
+  --lagos-roof: #789792;
+  --lagos-bridge: #e6e8da;
+  --lagos-bridge-dark: #426574;
+  --lagos-cable: #eaf2e7;
+  --lagos-ground: #d9ded4;
+  --lagos-ground-dark: #a4beb7;
+  --lagos-road: #6e8991;
+  --lagos-road-line: #d0d7c9;
+  --lagos-danfo: #e9b950;
+  --lagos-glass: #345568;
+  --lagos-tree: #668f80;
+  --lagos-tree-trunk: #6c8077;
+  --lagos-parking: #d9e6dc;
+  --lagos-parking-line: #f6f6e9;
+  --lagos-panel: var(--navy);
+  min-width: 0;
+  border-radius: var(--home-radius);
+  border: 1px solid var(--public-border);
+  background: var(--public-white);
+  overflow: hidden;
+  box-shadow: 0 24px 60px -44px var(--navy);
+}
+.lagos-hero[data-light="evening"] {
+  --lagos-sky-top: #18344e;
+  --lagos-sky-bottom: #c18d7f;
+  --lagos-cloud: #e9cbb6;
+  --lagos-sun: #f0b274;
+  --lagos-haze: #7b8794;
+  --lagos-water-light: #687f94;
+  --lagos-water: #304d69;
+  --lagos-water-line: #a2a5b5;
+  --lagos-building: #294a60;
+  --lagos-building-light: #718694;
+  --lagos-window: #e7c78b;
+  --lagos-roof: #516e7b;
+  --lagos-bridge: #c5c7c0;
+  --lagos-bridge-dark: #2b4c60;
+  --lagos-cable: #d2d5d0;
+  --lagos-ground: #829a9b;
+  --lagos-ground-dark: #617f85;
+  --lagos-road: #456172;
+  --lagos-road-line: #a5b2b2;
+  --lagos-tree: #3c6d66;
+  --lagos-tree-trunk: #4c676e;
+  --lagos-parking: #95acac;
+}
+.lagos-scene-topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 17px 20px 12px; }
+.lagos-scene-topline > span { display: flex; gap: 7px; align-items: center; font-size: var(--type-kicker); font-weight: 600; letter-spacing: 1.2px; color: var(--public-text); }
+.lagos-scene-topline > span > svg { color: #3a91a3; }
+.lagos-light-toggle { display: inline-flex; align-items: center; gap: 7px; font-size: var(--type-small); color: var(--public-text); background: var(--public-paper); border-radius: 20px; padding: 7px 9px; white-space: nowrap; }
+.lagos-light-dot { width: 9px; height: 9px; background: var(--lagos-sun); border-radius: 50%; border: 1px solid #b99857; }
+.lagos-location-tabs { display: flex; padding: 0 19px 14px; gap: 7px; }
+.lagos-location-tabs > button { display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1; padding: 11px 8px; font-size: var(--type-small); font-weight: 550; color: var(--public-text); background: var(--public-paper); border: 1px solid transparent; border-radius: 7px; white-space: nowrap; }
+.lagos-location-tabs > button.selected { background: var(--navy); color: var(--scene-paper); }
+.lagos-location-tabs > button.selected > span { width: 4px; height: 4px; background: var(--aqua); border-radius: 50%; }
+.lagos-stage { position: relative; aspect-ratio: 900 / 640; isolation: isolate; overflow: hidden; background: var(--lagos-sky-top); }
+.lagos-backdrop { display: block; width: 100%; height: 100%; translate: var(--lagos-pan, 0px) 0; scale: 1.025; transition: translate 500ms ease-out; }
+.lagos-backdrop path, .lagos-backdrop circle, .lagos-backdrop g { transition: fill 900ms, stroke 900ms, opacity 700ms; }
+.lagos-map-title { position: absolute; top: 5%; left: 5%; pointer-events: none; color: var(--navy); }
+.lagos-map-title > span { font-size: 8px; letter-spacing: 2px; display: block; margin-bottom: 7px; opacity: .6; }
+.lagos-map-title strong { font-family: "Plus Jakarta Sans",sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -.8px; }
+.lagos-map-title em { font-style: normal; color: #367e8e; }
+[data-light="evening"] .lagos-map-title { color: var(--scene-paper); }
+[data-light="evening"] .lagos-map-title em { color: #8cc9d0; }
+.lagos-skyline { transform-origin: 720px 250px; transition: opacity 700ms, transform 900ms var(--motion-ease); }
+.skyline-lekki { opacity: .65; transform: scaleY(.8); }
+.skyline-ikoyi { opacity: .25; transform: scaleY(.6); }
+.skyline-victoria { opacity: 1; transform: scaleY(1.12); }
+.lagos-houses { transition: opacity 700ms; }.houses-victoria { opacity: .24; }.houses-ikoyi { opacity: 1; }
+.lagos-bridge { transition: opacity 700ms; }.bridge-ikoyi { opacity: .65; }.bridge-victoria { opacity: .5; }
+.lagos-landmark-pin { position: absolute; z-index: 3; display: flex; align-items: center; gap: 6px; background: var(--lagos-panel); color: var(--scene-paper); font-size: var(--type-kicker); border: 1px solid #ffffff50; box-shadow: 0 3px 16px #102b3c22; border-radius: 24px; padding: 8px 10px; min-height: 34px; transition: left 600ms, top 600ms; }
+.lagos-landmark-pin > svg:first-child { color: var(--aqua); }
+.landmark-lekki { left: 35%; top: 29%; }.landmark-ikoyi { left: 12%; top: 34%; }.landmark-victoria { left: 60%; top: 23%; }
+.lagos-landmark-note { position: absolute; z-index: 6; top: 17%; left: 6%; right: 6%; background: var(--public-white); padding: 17px; border-radius: 12px; border: 1px solid var(--public-border); box-shadow: 0 8px 35px #0b1f3a30; }
+.lagos-landmark-note > div { display: flex; gap: 8px; align-items: center; color: var(--public-text); }
+.lagos-landmark-note strong { font-size: var(--type-label); color: var(--navy); }
+.lagos-landmark-note button { background: var(--public-paper); border-radius: 50%; color: var(--public-text); padding: 7px; margin-left: auto; display: grid; place-items: center; }
+.public-site .lagos-landmark-note p { font-size: var(--type-small); line-height: 1.8; margin: 12px 0 0; color: var(--public-text); }
+.lagos-parked-car { position: absolute; width: 69%; left: 12%; bottom: 3%; z-index: 2; transition: translate 1s var(--motion-ease); }
+.wash-chapter-0 .lagos-parked-car { translate: -4% 0; }
+.lagos-parked-car .car-art { width: 100%; position: static; filter: drop-shadow(0 7px 5px #15364a19); }
+.lagos-wash-detail { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
+.lagos-washman, .lagos-wash-bubbles, .lagos-clean-glints { opacity: 0; transition: opacity 700ms; }
+.wash-chapter-1 .lagos-washman, .wash-chapter-1 .lagos-wash-bubbles { opacity: 1; }
+.wash-chapter-2 .lagos-clean-glints { opacity: 1; }
+.lagos-setting-label { position: absolute; left: 5%; top: 64%; z-index: 3; display: flex; gap: 10px; align-items: center; background: #ffffffd9; backdrop-filter: blur(10px); border: 1px solid #ffffff65; border-radius: 9px; padding: 11px 13px; color: var(--navy); font-size: var(--type-small); box-shadow: 0 5px 15px #20485910; }
+.lagos-setting-label > svg { color: #28889e; }
+.lagos-setting-label small { display: block; color: var(--public-text); font-size: var(--type-kicker); margin-top: 4px; }
+.lagos-stage-footnote { position: absolute; bottom: 10px; right: 13px; color: var(--lagos-bridge-dark); font-size: 6px; letter-spacing: 1px; z-index: 4; }
+.lagos-location-caption { display: flex; align-items: center; gap: 14px; padding: 19px 21px 17px; background: var(--public-paper); border-top: 1px solid var(--public-border); }
+.lagos-location-caption strong { font-family: "Plus Jakarta Sans",sans-serif; font-size: 17px; letter-spacing: -.4px; font-weight: 650; color: var(--navy); }
+.public-site .lagos-location-caption p { font-size: var(--type-small); color: var(--public-text); line-height: 1.8; margin: 7px 0 0; }
+.lagos-coverage-link { flex-shrink: 0; padding: 10px; background: var(--public-white); color: var(--public-text); border: 1px solid var(--public-border); border-radius: 50%; display: grid; place-items: center; }
+.lagos-scene-controls { display: flex; align-items: center; gap: 8px; padding: 14px 17px 10px; }
+.lagos-wash-tabs { display: flex; gap: 3px; margin-right: auto; }
+.lagos-wash-tabs button, .lagos-paint-toggle, .lagos-play-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 8px 7px; min-height: 36px; background: transparent; color: var(--public-text); font-size: var(--type-small); white-space: nowrap; }
+.lagos-wash-tabs button { border-radius: 5px; }
+.lagos-wash-tabs button > span { font-size: 8px; opacity: .6; }
+.lagos-wash-tabs button.selected { background: var(--public-paper); color: var(--navy); }
+.public-site .lagos-proof-note { font-size: var(--type-kicker); line-height: 1.8; color: var(--public-text); padding: 0 22px 17px; }
+.lagos-proof-note > span { color: var(--muted); }
+.lagos-hero[data-running="yes"] .lagos-danfo { animation: lagos-danfo-drive 22s linear infinite; }
+.lagos-hero[data-running="yes"] .lagos-ferry { animation: lagos-ferry-drift 19s ease-in-out infinite alternate; }
+.lagos-hero[data-running="yes"] .lagos-clouds { animation: lagos-cloud-drift 24s ease-in-out infinite alternate; }
+.lagos-hero[data-running="yes"] .lagos-wash-bubbles { animation: lagos-bubble-rise 4s ease-in-out infinite; }
+.lagos-hero[data-running="yes"] .wash-chapter-2 .lagos-clean-glints { animation: lagos-glint 3s ease-in-out infinite; }
+@keyframes lagos-danfo-drive { from { translate: -760px -16px; } to { translate: 300px 3px; } }
+@keyframes lagos-ferry-drift { from { translate: -45px 0; } to { translate: 90px 0; } }
+@keyframes lagos-cloud-drift { from { translate: 0 0; } to { translate: 25px 0; } }
+@keyframes lagos-bubble-rise { 0%,100% { translate: 0 0; } 50% { translate: 0 -7px; } }
+@keyframes lagos-glint { 0%,100% { opacity: .4; } 50% { opacity: 1; } }
+@media(max-width:1100px) {
+  .lagos-scene-topline { padding-inline: 15px; }
+  .lagos-scene-topline > span { font-size: 8px; letter-spacing: .6px; }
+  .lagos-location-tabs { padding-inline: 14px; }
+  .lagos-scene-controls { flex-wrap: wrap; gap: 3px; }
+  .lagos-wash-tabs { flex-basis: 100%; }
+  .lagos-wash-tabs button { flex: 1; justify-content: center; }
+  .lagos-paint-toggle { margin-right: auto; }
+  .lagos-map-title strong { font-size: 21px; }
+  .lagos-landmark-pin { font-size: 8px; padding: 6px 8px; }
+  .landmark-victoria { left: 55%; }
+}
+@media(max-width:760px) {
+  .lagos-scene-topline { padding: 15px 15px 12px; }
+  .lagos-scene-topline > span { font-size: 8px; letter-spacing: .7px; }
+  .lagos-location-tabs > button { font-size: 11px; padding: 11px 6px; }
+  .lagos-map-title strong { font-size: 20px; }.lagos-map-title > span { font-size: 7px; margin-bottom: 5px; }
+  .lagos-landmark-pin { font-size: 8px; min-height: 30px; padding: 6px 8px; }
+  .landmark-lekki { left: 34%; top: 29%; }.landmark-victoria { left: 54%; top: 25%; }
+  .lagos-setting-label { padding: 8px 10px; font-size: 10px; gap: 7px; top: 63%; }
+  .lagos-setting-label small { font-size: 8px; }
+  .lagos-stage-footnote { font-size: 5px; bottom: 7px; right: 9px; }
+  .lagos-location-caption { padding: 17px; }.lagos-location-caption strong { font-size: 16px; }
+  .lagos-landmark-note { padding: 14px; top: 14%; }.lagos-landmark-note strong { font-size: 12px; }
+  .public-site .lagos-landmark-note p { font-size: 11px; line-height: 1.7; }
+  .lagos-scene-controls { padding: 10px 13px 8px; flex-wrap: nowrap; gap: 2px; }
+  .lagos-wash-tabs { flex-basis: auto; gap: 1px; }.lagos-wash-tabs button, .lagos-paint-toggle, .lagos-play-toggle { font-size: 10px; padding-inline: 5px; gap: 4px; }
+  .lagos-wash-tabs button > span { display: none; }.lagos-paint-toggle { margin-right: 0; }
+  .public-site .lagos-proof-note { padding: 0 17px 16px; font-size: 9px; }
+}

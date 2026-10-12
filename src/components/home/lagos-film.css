@@ -1,0 +1,43 @@
+.lagos-film { --film-ink: var(--navy); --film-caption: var(--scene-paper); background: var(--film-ink); border-color: var(--film-ink); }
+.lagos-film-screen { position: relative; aspect-ratio: 16 / 10; background: var(--lagos-sky-top); isolation: isolate; overflow: hidden; cursor: pointer; }
+.lagos-film-screen:focus-visible { outline: 3px solid var(--aqua); outline-offset: -5px; }
+.lagos-film-shot { position: absolute; inset: 0; opacity: 0; filter: blur(3px); transform: translateX(1.2%) scale(1.015); transition: opacity 950ms cubic-bezier(.22,1,.36,1), filter 950ms ease, transform 1200ms cubic-bezier(.22,1,.36,1); pointer-events: none; z-index: 0; }
+.lagos-film-shot[data-active="yes"] { opacity: 1; filter: blur(0); transform: translateX(0) scale(1); z-index: 1; }
+.film-camera { position: absolute; inset: 0; transform-origin: 50% 50%; transform: translateX(calc(var(--camera-x,0%) + var(--film-pointer-x,0%))) scale(var(--camera-scale,1.04)); transition: transform 130ms linear; }
+.film-shot-ikoyi .film-camera { transform-origin: 30% 60%; }.film-shot-victoria .film-camera { transform-origin: 80% 30%; }.film-shot-marina .film-camera { transform-origin: 50% 35%; }.film-shot-mainland .film-camera { transform-origin: 60% 60%; }
+.lagos-film .lagos-backdrop { scale: 1; translate: none; }
+.film-shot-marina .lagos-houses, .film-shot-marina .lagos-bridge, .film-shot-marina .lagos-skyline, .film-shot-mainland .lagos-bridge, .film-shot-mainland .lagos-houses { opacity: 0; }
+.film-shot-mainland .lagos-skyline { opacity: .4; transform: scaleY(.65); }
+.film-shot-ikoyi .lagos-bridge { opacity: .18; }
+.film-shot-victoria .lagos-bridge { opacity: .15; }
+.film-shot-marina .lagos-ferry { transform: translate(-70px,20px); }
+.film-shot-marina .link-bridge-traffic { opacity: 0; }
+.car-wash-scene { display: block; width: 100%; height: 100%; }
+.wash-foam { opacity: calc(.8 - var(--care-progress,0) * .65); transition: opacity 120ms linear; }
+.wash-setting-office .wash-foam { opacity: calc(.4 - var(--care-progress,0) * .35); }
+.wash-setting-office .wash-water { opacity: 0; }
+.wash-finish-glints { opacity: calc(var(--care-progress,0) * .8); }
+.washman-working-arm { transform-origin: 639px 286px; animation: washman-rinse 1600ms ease-in-out infinite alternate; animation-play-state: paused; }
+.wash-setting-office .washman-working-arm { transform-origin: 635px 290px; animation-name: washman-buff; animation-duration: 950ms; }
+.wash-water-stream { animation: wash-water-flow 700ms linear infinite; animation-play-state: paused; }
+.wash-water-drops { animation: wash-droplets 900ms linear infinite; animation-play-state: paused; }
+.lagos-film .road-car-east { animation: film-road-east 8s linear infinite; animation-delay: -3s; animation-play-state: paused; }
+.lagos-film .road-car-west { animation: film-road-west 11s linear infinite; animation-delay: -4s; animation-play-state: paused; }
+.bridge-car { offset-path: path("M -60 282 L 440 252 L 530 264 L 980 322"); offset-rotate: auto; animation: film-bridge-drive 12s linear infinite; animation-play-state: paused; }
+.bridge-car-0 { animation-delay: -3s; }.bridge-car-1 { animation-delay: -7s; }.bridge-car-2 { animation-delay: -10s; }
+.bridge-route-mainland .bridge-car { offset-path: path("M -80 337 C 205 334 394 292 514 268 S 738 238 986 225"); }
+.lagos-film .lagos-film-shot .lagos-danfo { animation: lagos-danfo-drive 13s linear infinite; animation-delay: -5s; animation-play-state: paused; }
+.lagos-film .lagos-film-shot .lagos-ferry { animation: lagos-ferry-drift 19s ease-in-out infinite alternate; animation-play-state: paused; }
+.lagos-film[data-running="yes"] .lagos-film-shot[data-active="yes"] :is(.road-car, .bridge-car, .lagos-danfo, .lagos-ferry, .washman-working-arm, .wash-water-stream, .wash-water-drops) { animation-play-state: running; }
+.lagos-film[data-running="no"] :is(.road-car, .bridge-car, .lagos-danfo, .lagos-ferry, .washman-working-arm, .wash-water-stream, .wash-water-drops) { animation-play-state: paused; }
+.film-vignette { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 55%, #061e361c); z-index: 2; pointer-events: none; }
+@keyframes washman-rinse { from { transform: rotate(-3deg); } to { transform: rotate(4deg); } }
+@keyframes washman-buff { from { transform: translateX(-8px) rotate(-4deg); } to { transform: translateX(5px) rotate(3deg); } }
+@keyframes wash-water-flow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -28; } }
+@keyframes wash-droplets { from { translate: 8px -2px; opacity: .2; } to { translate: -12px 4px; opacity: .9; } }
+@keyframes film-road-east { from { translate: -470px -9px; } to { translate: 640px 11px; } }
+@keyframes film-road-west { from { translate: 430px 8px; } to { translate: -900px -15px; } }
+@keyframes film-bridge-drive { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@media(max-width:760px) {
+  .lagos-film-screen { aspect-ratio: 4 / 3; }
+}
