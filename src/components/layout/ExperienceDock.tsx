@@ -1,130 +1,103 @@
 "use client"
 
-import React from "react"
-import { Icon } from "@/components/Visuals"
+import { useEffect, useState } from "react"
 import Button from "@/components/ui/Button"
-import { roles, operationsRoles, type Role } from "@/domain/roles"
-import { useAppNavigation } from "./NavigationProvider"
+import ButtonLink from "@/components/ui/ButtonLink"
+import { Icon, type IconName } from "@/components/Visuals"
+import { authHref, operationsRoles, roles, workspaceHref } from "@/lib/roles"
 
+const roleCards: { icon: IconName; blurb: string }[] = [
+  { icon: "car", blurb: "Book, track and confirm your care" },
+  { icon: "drop", blurb: "Assigned jobs, guided proof and shift summary" },
+  { icon: "card", blurb: "Fleet scheduling, confirmers and invoices" },
+  { icon: "pin", blurb: "Wash windows, on-site teams and residents" },
+  { icon: "shield", blurb: "Dispatch, evidence, screening and finance" },
+]
+
+/** Prototype navigation aid: jump between the demo workspaces. Not access control. */
 export default function ExperienceDock() {
-  const { route, navigate, workspace, explorer, setExplorer } =
-    useAppNavigation()
+  const [open, setOpen] = useState(false)
 
-  // Hide dock on account page to match original Experience.tsx behavior
-  if (route === "account") return null
+  useEffect(() => {
+    if (!open) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false)
+    }
+    window.addEventListener("keydown", closeOnEscape)
+    return () => window.removeEventListener("keydown", closeOnEscape)
+  }, [open])
+
+  const close = () => setOpen(false)
 
   return (
     <>
       <div className="experience-dock">
-        <Button onClick={() => navigate("account")}>My account</Button>
-        <button
-          className="dock-home"
-          onClick={() => navigate("home")}
-          aria-label="Public homepage"
-        >
+        <ButtonLink href="/account">My account</ButtonLink>
+        <ButtonLink className="dock-home" href="/" aria-label="Public homepage">
           <Icon name="drop" size={16} />
-        </button>
-        <button onClick={() => setExplorer(!explorer)}>
+        </ButtonLink>
+        <Button onClick={() => setOpen(!open)}>
           <span className="dock-dot" /> Explore workspaces{" "}
           <Icon name="chevron" size={13} />
-        </button>
+        </Button>
       </div>
 
-      {explorer && (
+      {open && (
         <div className="role-explorer">
           <div className="explorer-heading">
             <div>
               <small>THE GO-WASH EXPERIENCE</small>
               <h3>One promise. Every perspective.</h3>
             </div>
-            <button
-              onClick={() => setExplorer(false)}
-              aria-label="Close workspace menu"
-            >
+            <Button onClick={close} aria-label="Close workspace menu">
               <Icon name="close" size={18} />
-            </button>
+            </Button>
           </div>
           <p>
             Explore the interactive prototype. These role switches are for
             demonstration, not production access control.
           </p>
-          {roles.map((r, i) => (
-            <button
+          {roles.map((role, i) => (
+            <ButtonLink
               className="explorer-role"
-              key={r}
-              onClick={() => {
-                workspace(r)
-                setExplorer(false)
-              }}
+              key={role}
+              href={workspaceHref(role)}
+              onClick={close}
             >
               <span className="explorer-icon">
-                <Icon
-                  name={
-                    i === 0
-                      ? "car"
-                      : i === 1
-                        ? "drop"
-                        : i === 2
-                          ? "card"
-                          : i === 3
-                            ? "pin"
-                            : "shield"
-                  }
-                />
+                <Icon name={roleCards[i].icon} />
               </span>
               <span>
                 <strong>
-                  {r === "Washman" ? "Washman & field staff" : r}
-                  <small>
-                    {
-                      [
-                        "Book, track and confirm your care",
-                        "Assigned jobs, guided proof and shift summary",
-                        "Fleet scheduling, confirmers and invoices",
-                        "Wash windows, on-site teams and residents",
-                        "Dispatch, evidence, screening and finance",
-                      ][i]
-                    }
-                  </small>
+                  {role === "Washman" ? "Washman & field staff" : role}
+                  <small>{roleCards[i].blurb}</small>
                 </strong>
               </span>
               <Icon name="arrow" size={17} />
-            </button>
+            </ButtonLink>
           ))}
           <div className="operations-role-links">
             <small>OPERATIONS STAFF</small>
             <div>
-              {operationsRoles.map((r) => (
-                <button
-                  key={r}
-                  onClick={() => {
-                    workspace(r)
-                    setExplorer(false)
-                  }}
+              {operationsRoles.map((role) => (
+                <ButtonLink
+                  key={role}
+                  href={workspaceHref(role)}
+                  onClick={close}
                 >
-                  {r}
+                  {role}
                   <Icon name="arrow" size={12} />
-                </button>
+                </ButtonLink>
               ))}
             </div>
           </div>
           <div className="explorer-links">
-            <button
-              onClick={() => {
-                navigate("auth/login")
-                setExplorer(false)
-              }}
-            >
+            <ButtonLink href={authHref("login")} onClick={close}>
               Authentication flows
-            </button>
-            <button
-              onClick={() => {
-                navigate("confirm")
-                setExplorer(false)
-              }}
-            >
+            </ButtonLink>
+            <ButtonLink href="/confirm" onClick={close}>
               Driver verdict link
-            </button>
+            </ButtonLink>
           </div>
         </div>
       )}

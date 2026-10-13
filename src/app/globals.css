@@ -1,10 +1,12 @@
-@import "../index.css";
-@import "../motion.css";
-@import "../experience.css";
-@import "../public-pages.css";
-@import "../homepages.css";
-@import "../readability.css";
-@import "../components/home/lagos-hero.css";
-@import "../components/home/lagos-film.css";
-@import "../responsive.css";
-@import "../interactions.css";
+/* Order matters: later sheets override earlier ones. */
+@import "../styles/index.css";
+@import "../styles/links.css";
+@import "../styles/motion.css";
+@import "../styles/experience.css";
+@import "../styles/public-pages.css";
+@import "../styles/homepages.css";
+@import "../styles/readability.css";
+@import "../features/marketing/scenes/lagos-hero.css";
+@import "../features/marketing/scenes/lagos-film.css";
+@import "../styles/responsive.css";
+@import "../styles/interactions.css";

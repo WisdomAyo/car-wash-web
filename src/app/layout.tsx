@@ -1,49 +1,52 @@
 import type { Metadata, Viewport } from "next"
-import { Suspense, type ReactNode } from "react"
+import localFont from "next/font/local"
+import type { ReactNode } from "react"
 import "./globals.css"
-import { NavigationProvider } from "@/components/layout/NavigationProvider"
-import AppShell from "@/components/layout/AppShell"
+import MotionProvider from "@/components/Motion"
+import FloatingChrome from "@/components/layout/FloatingChrome"
+
+// Self-hosted, subsetted variable fonts (Latin + the Naira sign): see scripts/subset-fonts.py.
+// Weights are a continuous range, so the fractional weights in the stylesheets (450, 550, 650,
+// 750) render exactly. Nothing is fetched from Google and nothing extra loads for `₦`.
+const inter = localFont({
+  src: "./fonts/inter-latin.woff2",
+  variable: "--font-inter",
+  weight: "400 800",
+  display: "swap",
+})
+const jakarta = localFont({
+  src: "./fonts/plus-jakarta-sans-latin.woff2",
+  variable: "--font-jakarta",
+  weight: "400 800",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
-  title: "Go-Wash · Mobile car care across Nigeria",
+  title: {
+    default: "Go-Wash · Mobile car care across Nigeria",
+    template: "%s · Go-Wash",
+  },
   description:
     "Nigeria's premium mobile car care service. On-demand and recurring vehicle washing with GPS verification and proof.",
-  icons: {
-    icon: "/favicon.ico",
-  },
+  // Prototype: keep out of search results until launch.
+  robots: { index: false, follow: false },
 }
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  themeColor: "#0b1f3a",
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Plus+Jakarta+Sans:wght@400;500;600;650;700;750;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
       <body>
-        <Suspense fallback={null}>
-          <NavigationProvider>
-            <AppShell>{children}</AppShell>
-          </NavigationProvider>
-        </Suspense>
+        <MotionProvider>
+          {children}
+          <FloatingChrome />
+        </MotionProvider>
       </body>
     </html>
   )

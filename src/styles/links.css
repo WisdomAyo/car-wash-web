@@ -1,0 +1,19 @@
+/*
+ * Navigation is rendered as <a> (via ButtonLink / Brand) where the design was written for <button>.
+ * Every `button` selector in these stylesheets also matches `a` (`:is(button,a)`, same specificity).
+ *
+ * This restores what a button does by default and a link does not. All rules here have zero
+ * specificity (`:where`) except the grid exception, so any component rule wins.
+ *  - inline-block + centred text
+ *  - shrink-to-fit width in normal flow (a block-level <a> would stretch to fill its container)
+ */
+:where(.link-btn) {
+  display: inline-block;
+  text-align: center;
+  width: fit-content;
+}
+
+/* Grid items stretch to fill their cell (as buttons do), so keep their automatic width. */
+:where(.editorial-link-grid, .customer-audience-links) > .link-btn {
+  width: auto;
+}

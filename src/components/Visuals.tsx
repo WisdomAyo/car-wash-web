@@ -1,6 +1,24 @@
 import { useId } from "react"
 
-export type IconName = "grid" | "car" | "calendar" | "shield" | "card" | "gift" | "help" | "arrow" | "pin" | "clock" | "check" | "plus" | "bell" | "chevron" | "drop" | "star" | "close" | "logout"
+export type IconName =
+  | "grid"
+  | "car"
+  | "calendar"
+  | "shield"
+  | "card"
+  | "gift"
+  | "help"
+  | "arrow"
+  | "pin"
+  | "clock"
+  | "check"
+  | "plus"
+  | "bell"
+  | "chevron"
+  | "drop"
+  | "star"
+  | "close"
+  | "logout"
 
 type IconProps = {
   name: IconName
@@ -101,19 +119,9 @@ export function Icon({ name, size = 20 }: IconProps) {
 }
 
 export type CarVariant =
-  | "sedan"
-  | "suv"
-  | "hatchback"
-  | "coupe"
-  | "pickup"
-  | "jeep"
+  "sedan" | "suv" | "hatchback" | "coupe" | "pickup" | "jeep"
 
-export type CarFinish =
-  | "midnight"
-  | "silver"
-  | "emerald"
-  | "sunset"
-  | "bronze"
+export type CarFinish = "midnight" | "silver" | "emerald" | "sunset" | "bronze"
 
 const carFinishes: Record<
   CarFinish,
@@ -152,8 +160,7 @@ const carProfiles: Record<
 > = {
   sedan: {
     label: "sedan",
-    body:
-      "M88 181c10-27 37-39 87-51l65-56c12-9 88-13 144-3 36 7 75 29 109 64l68 21c23 7 35 23 35 54l-11 27-465 3-40-24Z",
+    body: "M88 181c10-27 37-39 87-51l65-56c12-9 88-13 144-3 36 7 75 29 109 64l68 21c23 7 35 23 35 54l-11 27-465 3-40-24Z",
     windows: [
       "m201 127 49-45c15-8 75-8 105-4l5 49Z",
       "m372 81 4 47 89 5c-30-28-64-47-93-52Z",
@@ -162,8 +169,7 @@ const carProfiles: Record<
   },
   suv: {
     label: "SUV",
-    body:
-      "M72 181c13-27 43-40 101-49l42-69c13-13 134-16 184-4 36 9 72 39 101 77l63 18c23 7 34 24 33 56l-11 27-474 3-40-24Z",
+    body: "M72 181c13-27 43-40 101-49l42-69c13-13 134-16 184-4 36 9 72 39 101 77l63 18c23 7 34 24 33 56l-11 27-474 3-40-24Z",
     windows: [
       "m196 127 32-55c18-8 77-9 122-5l3 60Z",
       "m365 68 4 60 101 5c-30-37-68-59-105-65Z",
@@ -172,8 +178,7 @@ const carProfiles: Record<
   },
   hatchback: {
     label: "hatchback",
-    body:
-      "M103 184c11-29 37-40 88-51l57-61c14-10 99-12 145-1 35 9 64 33 89 67l69 20c23 7 34 24 34 52l-11 27-448 3-42-23Z",
+    body: "M103 184c11-29 37-40 88-51l57-61c14-10 99-12 145-1 35 9 64 33 89 67l69 20c23 7 34 24 34 52l-11 27-448 3-42-23Z",
     windows: [
       "m212 128 48-47c14-8 64-9 94-4l2 51Z",
       "m368 80 4 49 78 5c-24-27-53-45-82-54Z",
@@ -182,8 +187,7 @@ const carProfiles: Record<
   },
   coupe: {
     label: "sports coupe",
-    body:
-      "M75 190c19-35 54-49 116-59l75-47c29-16 112-18 154-1 25 10 52 29 79 55l65 21c22 8 32 25 32 51l-11 27-475 3-39-22Z",
+    body: "M75 190c19-35 54-49 116-59l75-47c29-16 112-18 154-1 25 10 52 29 79 55l65 21c22 8 32 25 32 51l-11 27-475 3-39-22Z",
     windows: [
       "m219 128 58-37c22-10 61-12 89-7l-1 44Z",
       "m379 87 2 42 83 4c-27-23-59-39-85-46Z",
@@ -192,8 +196,7 @@ const carProfiles: Record<
   },
   pickup: {
     label: "pickup truck",
-    body:
-      "M72 183c15-28 43-39 96-48l51-62c13-11 99-14 137-4 27 8 49 30 67 62h139c20 0 34 17 34 51v28l-11 27-474 3-41-24Z",
+    body: "M72 183c15-28 43-39 96-48l51-62c13-11 99-14 137-4 27 8 49 30 67 62h139c20 0 34 17 34 51v28l-11 27-474 3-41-24Z",
     windows: [
       "m194 128 38-47c13-9 57-10 83-5l2 52Z",
       "m329 78 4 51 62 2c-17-28-39-46-66-53Z",
@@ -202,8 +205,7 @@ const carProfiles: Record<
   },
   jeep: {
     label: "off-road Jeep",
-    body:
-      "M67 179c12-27 39-39 92-47l35-72c12-14 142-16 191-5 31 8 65 41 91 79l84 19c24 6 36 24 36 57l-11 27-476 3-42-24Z",
+    body: "M67 179c12-27 39-39 92-47l35-72c12-14 142-16 191-5 31 8 65 41 91 79l84 19c24 6 36 24 36 57l-11 27-476 3-42-24Z",
     windows: [
       "m176 127 31-58c17-8 73-9 112-5l2 63Z",
       "m335 65 3 63 103 5c-26-38-67-61-106-68Z",
@@ -296,19 +298,44 @@ export function CarArt({
             d="M103 167h79l-10 10h-71Zm368-32 63-10 5 8-62 12Z"
             fill="#071826"
           />
-          <path d="M267 91 402 191" stroke="#fff" strokeOpacity=".28" strokeWidth="7" />
+          <path
+            d="M267 91 402 191"
+            stroke="#fff"
+            strokeOpacity=".28"
+            strokeWidth="7"
+          />
         </g>
       )}
       {variant === "jeep" && (
         <g>
-          <path d="M204 51h190M220 43v17m157-17v17" stroke="#dce8eb" strokeWidth="3" />
-          <circle cx="103" cy="171" r="35" fill="#09131d" stroke="#738894" strokeWidth="5" />
+          <path
+            d="M204 51h190M220 43v17m157-17v17"
+            stroke="#dce8eb"
+            strokeWidth="3"
+          />
+          <circle
+            cx="103"
+            cy="171"
+            r="35"
+            fill="#09131d"
+            stroke="#738894"
+            strokeWidth="5"
+          />
           <circle cx="103" cy="171" r="17" fill="#263b48" />
-          <path d="M515 190v27m12-29v29m12-31v31m12-29v29m12-25v25" stroke="#a9bbc3" strokeWidth="3" />
+          <path
+            d="M515 190v27m12-29v29m12-31v31m12-29v29m12-25v25"
+            stroke="#a9bbc3"
+            strokeWidth="3"
+          />
         </g>
       )}
       {variant === "sedan" && (
-        <path d="M170 229h337" stroke="#e8f2f4" strokeOpacity=".55" strokeWidth="3" />
+        <path
+          d="M170 229h337"
+          stroke="#e8f2f4"
+          strokeOpacity=".55"
+          strokeWidth="3"
+        />
       )}
       <path
         d="m176 136 318 6M363 138l5 86M209 138l-9 85m174-77h17m-164 0h17"
@@ -352,10 +379,7 @@ export function CarArt({
           <circle cx={x} cy="219" r="6" fill="#748896" />
         </g>
       ))}
-      <path
-        d="m359 119 23-3 10 8-5 10-24-3Z"
-        fill={paint.colors[1]}
-      />
+      <path d="m359 119 23-3 10 8-5 10-24-3Z" fill={paint.colors[1]} />
     </svg>
   )
 }

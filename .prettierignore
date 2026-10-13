@@ -1,0 +1,5 @@
+.next
+node_modules
+package-lock.json
+# Hand-tuned stylesheets: keep them compact.
+*.css

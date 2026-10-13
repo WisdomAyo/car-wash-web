@@ -1,0 +1,31 @@
+/* Existing workspaces keep their layout, with a modest, explicit text-size lift. */
+.app-shell .nav-item, .portal-shell .nav-item { font-size: 14px; }
+.app-shell .breadcrumb, .portal-shell .breadcrumb { font-size: 13px; }
+.app-shell .page-heading p, .portal-shell .page-heading p { font-size: 13px; line-height: 1.8; }
+.app-shell .primary, .portal-shell .primary { font-size: 13px; }
+.app-shell .secondary, .portal-shell .secondary { font-size: 12px; }
+.app-shell .section-heading h3, .portal-shell .portal-panel .section-heading h3 { font-size: 17px; }
+.app-shell .service-card p, .app-shell .trust-card > p { font-size: 12px; }
+.app-shell .service-card h4, .app-shell .booking-top h4 { font-size: 16px; }
+.app-shell .booking-details > span, .app-shell .stats-row small { font-size: 11px; }
+.app-shell .vehicle-card h4 { font-size: 14px; }
+.app-shell .vehicle-footer > span, .app-shell .vehicle-footer :is(button,a) { font-size: 10px; }
+.app-shell .subscription-card p, .app-shell .proof-item strong { font-size: 12px; }
+.portal-shell .portal-table td, .portal-shell .portal-table td strong { font-size: 12px; }
+.portal-shell .portal-table td small, .portal-shell .portal-table th { font-size: 10px; }
+.portal-shell .portal-status { font-size: 10px; }
+.portal-shell .portal-metrics p, .portal-shell .portal-metrics article > div { font-size: 12px; }
+.auth-form-wrap .auth-description, .auth-form-wrap label { font-size: 14px; }
+.auth-form-wrap input, .auth-form-wrap select, .auth-form-wrap textarea { font-size: 15px; }
+.auth-form-wrap .primary { font-size: 14px; }
+.auth-form-wrap .auth-role-tabs :is(button,a) { font-size: 12px; }
+.auth-form-wrap .auth-security { font-size: 11px; }
+.confirmer-card > p, .confirmer-card label { font-size: 14px; line-height: 1.9; }
+@media(max-width:760px) {
+  .app-shell .booking-details { flex-wrap: wrap; gap: 10px; }
+  .app-shell .booking-details > span { font-size: 10px; }
+  .app-shell .vehicle-footer { flex-wrap: wrap; }
+  .app-shell .primary, .portal-shell .primary { font-size: 12px; }
+  .portal-shell .portal-metrics p, .portal-shell .portal-metrics article > div { font-size: 10px; line-height: 1.7; }
+  .auth-form-wrap .auth-role-tabs :is(button,a) { font-size: 10px; }
+}

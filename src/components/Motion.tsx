@@ -1,28 +1,36 @@
+"use client"
+
 import {
   createContext,
   useContext,
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react"
 import Button from "./ui/Button"
 import { Icon } from "./Visuals"
 
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)"
+const subscribeToReducedMotion = (onChange: () => void) => {
+  const media = window.matchMedia(REDUCED_MOTION)
+  media.addEventListener("change", onChange)
+  return () => media.removeEventListener("change", onChange)
+}
+
 const MotionContext = createContext({ enabled: true, toggle: () => {} })
 export const useMotion = () => useContext(MotionContext)
 
+/** The single owner of decorative-animation preferences (system setting + manual pause). */
 export default function MotionProvider({ children }: { children: ReactNode }) {
-  const [systemReduced, setSystemReduced] = useState(
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  // Server and first client render assume motion is allowed, then follow the system setting.
+  const systemReduced = useSyncExternalStore(
+    subscribeToReducedMotion,
+    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => false,
   )
   const [paused, setPaused] = useState(false)
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)")
-    const update = () => setSystemReduced(media.matches)
-    media.addEventListener("change", update)
-    return () => media.removeEventListener("change", update)
-  }, [])
   const enabled = !systemReduced && !paused
   return (
     <MotionContext.Provider
@@ -57,17 +65,27 @@ export default function MotionProvider({ children }: { children: ReactNode }) {
   )
 }
 
-/** Key only the visual wrapper, never the screen: page state survives transitions. */
+/**
+ * Fades its content in when `transitionKey` changes. Key only the visual wrapper, never
+ * the screen: page state survives transitions. `animateOnMount={false}` skips the entrance
+ * on first render so server-rendered content never flashes.
+ */
 export function PageTransition({
   transitionKey,
+  animateOnMount = true,
   children,
 }: {
   transitionKey: string
+  animateOnMount?: boolean
   children: ReactNode
 }) {
   const ref = useRef<HTMLDivElement>(null)
+  const mounted = useRef(false)
   const { enabled } = useMotion()
   useEffect(() => {
+    const firstRun = !mounted.current
+    mounted.current = true
+    if (firstRun && !animateOnMount) return
     if (!enabled || !ref.current) return
     const animation = ref.current.animate(
       [
@@ -77,7 +95,7 @@ export function PageTransition({
       { duration: 380, easing: "cubic-bezier(.22,1,.36,1)" },
     )
     return () => animation.cancel()
-  }, [transitionKey, enabled])
+  }, [transitionKey, enabled, animateOnMount])
   return (
     <div ref={ref} className="page-transition">
       {children}
