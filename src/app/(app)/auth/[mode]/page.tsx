@@ -5,7 +5,7 @@ import { authModes, roleFromParam, type AuthMode } from "@/lib/roles"
 
 type Props = {
   params: Promise<{ mode: string }>
-  searchParams: Promise<{ role?: string | string[] }>
+  searchParams: Promise<{ role?: string; next?: string; ref?: string; expired?: string }>
 }
 
 const titles: Record<AuthMode, string> = {
@@ -28,11 +28,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function AuthPage({ params, searchParams }: Props) {
   const { mode } = await params
   if (!isAuthMode(mode)) notFound()
-  const { role } = await searchParams
+  const { role, next, ref, expired } = await searchParams
   return (
     <Auth
       mode={mode}
       initialRole={roleFromParam(typeof role === "string" ? role : undefined)}
+      next={typeof next === "string" ? next : undefined}
+      referral={typeof ref === "string" ? ref : undefined}
+      expired={expired === "1"}
     />
   )
 }

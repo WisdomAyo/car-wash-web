@@ -49,7 +49,7 @@ export default function Confirmer() {
           </div>
         ) : (
           <>
-            <p className="policy-note">
+            <p className="kit-hint">
               Vehicle illustration only. Actual before-and-after job photos
               appear in a connected service.
             </p>

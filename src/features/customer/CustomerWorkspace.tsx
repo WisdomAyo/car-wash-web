@@ -957,7 +957,7 @@ export default function CustomerWorkspace() {
                         </select>
                       </label>
                     </div>
-                    <p className="policy-note">
+                    <p className="kit-hint">
                       <Icon name="shield" size={16} /> We work in approved
                       outdoor spaces only. Your washman never enters your home.
                     </p>
@@ -997,7 +997,7 @@ export default function CustomerWorkspace() {
                         <h3>{money(services[service].price)}</h3>
                       </div>
                     </div>
-                    <p className="policy-note">
+                    <p className="kit-hint">
                       Prototype checkout — no real payment will be taken.
                     </p>
                     <button
@@ -1089,7 +1089,7 @@ export default function CustomerWorkspace() {
                 >
                   Preview the TREATED verdict <Icon name="arrow" size={16} />
                 </button>
-                <p className="policy-note">
+                <p className="kit-hint">
                   Demo: preview the ready-for-review stage of your wash.
                 </p>
               </>
@@ -1279,7 +1279,7 @@ export default function CustomerWorkspace() {
                       </select>
                     </label>
                   </div>
-                  <p className="policy-note">
+                  <p className="kit-hint">
                     <Icon name="shield" size={16} /> In production, duplicate
                     plates are held for admin review.
                   </p>
@@ -1409,7 +1409,7 @@ export default function CustomerWorkspace() {
                     <strong>₦8,500</strong>
                   </div>
                 </div>
-                <p className="policy-note">
+                <p className="kit-hint">
                   Sample evidence record. Actual job photos and location trails
                   require a connected backend.
                 </p>

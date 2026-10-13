@@ -19,6 +19,31 @@ export type IconName =
   | "star"
   | "close"
   | "logout"
+  | "search"
+  | "users"
+  | "list"
+  | "file"
+  | "settings"
+  | "alert"
+  | "mail"
+  | "tool"
+  | "chart"
+  | "map"
+  | "refresh"
+  | "download"
+  | "eye"
+  | "upload"
+  | "edit"
+  | "trash"
+  | "lock"
+  | "phone"
+  | "inbox"
+  | "message"
+  | "receipt"
+  | "user"
+  | "building"
+  | "book"
+  | "copy"
 
 type IconProps = {
   name: IconName
@@ -100,6 +125,31 @@ export function Icon({ name, size = 20 }: IconProps) {
         <path d="M10 3H4v18h6m5-15 6 6-6 6M8 12h13" />
       </>
     ),
+    search: (<><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></>),
+    users: (<><circle cx="9" cy="8" r="3.5" /><path d="M2.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" /><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2 .7 3.5 2.6 3.5 5.8" /></>),
+    list: (<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" />),
+    file: (<><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></>),
+    settings: (<><circle cx="12" cy="12" r="3" /><path d="M19.4 13.5a7.5 7.5 0 0 0 0-3l2-1.5-2-3.4-2.4.9a7.5 7.5 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5a7.5 7.5 0 0 0-2.6 1.5l-2.4-.9-2 3.4 2 1.5a7.5 7.5 0 0 0 0 3l-2 1.5 2 3.4 2.4-.9a7.5 7.5 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.5 7.5 0 0 0 2.6-1.5l2.4.9 2-3.4z" /></>),
+    alert: (<><path d="M12 3 2 20h20z" /><path d="M12 10v4m0 3h.01" /></>),
+    mail: (<><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>),
+    tool: (<path d="M14.7 6.3a4 4 0 0 0-5.2 5.2L3 18l3 3 6.5-6.5a4 4 0 0 0 5.2-5.2l-2.7 2.7-2.4-.6-.6-2.4z" />),
+    chart: (<path d="M4 20V10m6 10V4m6 16v-7m5 7H2" />),
+    map: (<><path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2z" /><path d="M9 4v14m6-12v14" /></>),
+    refresh: (<path d="M20 11a8 8 0 0 0-14.5-3M4 4v4h4M4 13a8 8 0 0 0 14.5 3M20 20v-4h-4" />),
+    download: (<path d="M12 3v12m-5-4 5 5 5-5M4 20h16" />),
+    eye: (<><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></>),
+    upload: (<path d="M12 16V4m-5 5 5-5 5 5M4 20h16" />),
+    edit: (<path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4" />),
+    trash: (<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6m4-6v6" />),
+    lock: (<><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></>),
+    phone: (<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z" />),
+    inbox: (<><path d="M3 13l3-8h12l3 8v6H3z" /><path d="M3 13h5l1 3h6l1-3h5" /></>),
+    message: (<path d="M4 5h16v11H9l-5 4z" />),
+    receipt: (<><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z" /><path d="M9 8h6M9 12h6" /></>),
+    user: (<><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7" /></>),
+    building: (<><path d="M5 21V4h9v17M14 9h5v12M3 21h18" /><path d="M8 8h3M8 12h3M8 16h3" /></>),
+    book: (<><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z" /><path d="M4 19V5M9 7h6" /></>),
+    copy: (<><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V6a2 2 0 0 1 2-2h8" /></>),
   }
   return (
     <svg

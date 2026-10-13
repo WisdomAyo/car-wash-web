@@ -32,7 +32,12 @@ export const roleFromParam = (
   allRoles.find((role) => role.toLowerCase() === value?.toLowerCase()) ??
   fallback
 
-export const workspaceHref = (role: Role) => `/workspace/${roleSlug(role)}`
+/** Dispatcher, finance, support and super admin share one operations space; what they see follows their role. */
+export const isAdminRole = (role: Role) =>
+  role === "Super admin" || operationsRoles.includes(role)
+
+export const workspaceHref = (role: Role) =>
+  isAdminRole(role) ? "/workspace/admin" : `/workspace/${roleSlug(role)}`
 
 export type AuthMode = "login" | "register" | "recover"
 export const authModes: AuthMode[] = ["login", "register", "recover"]

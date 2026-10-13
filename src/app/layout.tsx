@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import "./globals.css"
 import MotionProvider from "@/components/Motion"
 import FloatingChrome from "@/components/layout/FloatingChrome"
+import Providers from "@/components/app/Providers"
 
 // Self-hosted, subsetted variable fonts (Latin + the Naira sign): see scripts/subset-fonts.py.
 // Weights are a continuous range, so the fractional weights in the stylesheets (450, 550, 650,
@@ -44,8 +45,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${inter.variable} ${jakarta.variable}`}>
       <body>
         <MotionProvider>
-          {children}
-          <FloatingChrome />
+          <Providers>
+            {children}
+            <FloatingChrome />
+          </Providers>
         </MotionProvider>
       </body>
     </html>
