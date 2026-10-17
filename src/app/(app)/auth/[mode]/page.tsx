@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import Auth from "@/features/auth/Auth"
-import { authModes, roleFromParam, type AuthMode } from "@/lib/roles"
+import { authHref, authModes, isAdminRole, roleFromParam, staffLoginHref, type AuthMode } from "@/lib/roles"
 
 type Props = {
   params: Promise<{ mode: string }>
@@ -29,10 +29,24 @@ export default async function AuthPage({ params, searchParams }: Props) {
   const { mode } = await params
   if (!isAuthMode(mode)) notFound()
   const { role, next, ref, expired } = await searchParams
+  const wanted = roleFromParam(typeof role === "string" ? role : undefined)
+
+  // The field team and the operations team do not use this page: send them to theirs.
+  if (wanted === "Washman" || isAdminRole(wanted)) {
+    const safe = typeof next === "string" ? next : undefined
+    const target =
+      wanted === "Washman"
+        ? mode === "login"
+          ? staffLoginHref({ next: safe })
+          : authHref(mode, wanted)
+        : staffLoginHref({ team: "operations", next: safe })
+    redirect(expired === "1" ? `${target}${target.includes("?") ? "&" : "?"}expired=1` : target)
+  }
+
   return (
     <Auth
       mode={mode}
-      initialRole={roleFromParam(typeof role === "string" ? role : undefined)}
+      initialRole={wanted}
       next={typeof next === "string" ? next : undefined}
       referral={typeof ref === "string" ? ref : undefined}
       expired={expired === "1"}

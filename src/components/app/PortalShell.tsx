@@ -5,8 +5,10 @@ import { usePathname } from "next/navigation"
 import { useCallback, useState, type ReactNode } from "react"
 import Brand from "@/components/Brand"
 import SidebarControls from "@/components/SidebarControls"
+import SoundToggle from "@/components/app/SoundToggle"
 import { Icon, type IconName } from "@/components/Visuals"
 import useDismissiblePanel from "@/hooks/useDismissiblePanel"
+import useNotificationAlerts from "@/hooks/useNotificationAlerts"
 import { useResource } from "@/lib/api/hooks"
 import type { AppNotification } from "@/lib/api/types"
 import { useSignOut } from "@/lib/auth"
@@ -62,9 +64,11 @@ export default function PortalShell({
   useDismissiblePanel(menuOpen, closeMenu, ".portal-sidebar")
 
   const notifications = useResource<AppNotification[]>(notificationsPath ?? null, undefined, {
-    refetchInterval: 60_000,
+    refetchInterval: 20_000,
+    background: true,
   })
   const unread = notifications.data?.filter((n) => !n.read).length ?? 0
+  useNotificationAlerts(notifications.data)
 
   const current =
     groups.flatMap((group) => group.items).find((item) => item.href !== root && isActive(pathname, item, root)) ??
@@ -154,6 +158,7 @@ export default function PortalShell({
                 {today}
               </span>
             )}
+            {notificationsPath && <SoundToggle />}
             {notificationsHref && (
               <Link className="notification-btn" href={notificationsHref} aria-label={`Notifications${unread ? `, ${unread} unread` : ""}`}>
                 <Icon name="bell" />

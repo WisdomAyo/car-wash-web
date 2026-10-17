@@ -231,3 +231,20 @@ button.primary.kit-wide, .primary.kit-wide { width: 100%; }
 
 .kit-hint { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; line-height: 1.7; color: #8393a4; margin-top: 14px; }
 .kit-hint svg { flex-shrink: 0; margin-top: 3px; }
+
+/* The wash progress line: real stages. The original markup assumed exactly two stages were done; these keep its look for any number. */
+.water-line > div:nth-last-child(2):after { width: 50%; }
+.water-line > div.complete.reached > span { background: var(--aqua); border: 3px solid white; box-shadow: none; color: white; }
+.water-line > div.now > span { background: white; border: 4px solid #e1f8fb; box-shadow: 0 0 0 1px var(--aqua); }
+.water-line > div.linked:after { background: var(--aqua); }
+
+/* Chat: rating row under an answer, and the small contact form inside the thread. */
+.chat-rating { display: flex; gap: 8px; margin-top: 10px; }
+.chat-rating button { background: transparent; border: 1px solid #d5e2ea; border-radius: 999px; padding: 4px 10px; font-size: 11px; color: #4d7182; }
+.chat-rating button[aria-pressed="true"] { background: #e3f6f9; border-color: var(--aqua); color: #087e91; }
+form.chat-message { display: flex; flex-direction: column; gap: 8px; max-width: 100%; }
+form.chat-message input { margin: 0; }
+
+/* Customer sidebar: a little air between the two groups, and "add" buttons that sit under their label inside a dialog. */
+.sidebar nav + .nav-label { margin-top: 14px; }
+.modal label > button.secondary { display: flex; width: 100%; margin-top: 8px; }

@@ -250,7 +250,7 @@ export type Organisation = {
   contact_email: string | null
   contact_phone: string | null
   billing_email: string | null
-  my_role?: "owner" | "manager" | "confirmer" | "resident"
+  my_role?: "owner" | "manager" | "confirmer" | "estate_manager" | "resident"
 }
 
 export type Member = { id: string; name: string; email: string | null; phone: string | null; role: string }

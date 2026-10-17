@@ -42,8 +42,31 @@ export const workspaceHref = (role: Role) =>
 export type AuthMode = "login" | "register" | "recover"
 export const authModes: AuthMode[] = ["login", "register", "recover"]
 
-export const authHref = (mode: AuthMode, role?: Role) =>
-  role ? `/auth/${mode}?role=${encodeURIComponent(role)}` : `/auth/${mode}`
+/** The only audiences on the public sign-in / sign-up pages. Staff and operations have their own pages. */
+export const publicAuthRoles: Role[] = ["Customer", "Corporate", "Estate"]
+
+/** The field team's own sign-in, and the operations team's (same page, other tab). */
+export const staffLoginHref = (options: { team?: "operations"; next?: string } = {}) => {
+  const params = new URLSearchParams()
+  if (options.team) params.set("team", options.team)
+  if (options.next) params.set("next", options.next)
+  const text = params.toString()
+  return text ? `/staff/login?${text}` : "/staff/login"
+}
+
+/** Where someone applies to become a washman. */
+export const washmanApplyHref = "/become-a-washman"
+
+/** Where a washman is told how to get a PIN reset or a new phone approved. */
+export const staffHelpHref = "/staff/help"
+
+export const authHref = (mode: AuthMode, role?: Role) => {
+  if (role === "Washman") {
+    return mode === "register" ? washmanApplyHref : mode === "recover" ? staffHelpHref : staffLoginHref()
+  }
+  if (role && isAdminRole(role)) return staffLoginHref({ team: "operations" })
+  return role ? `/auth/${mode}?role=${encodeURIComponent(role)}` : `/auth/${mode}`
+}
 
 /** Organisation roles get the partner portal; every other non-customer role gets live operations. */
 export type PartnerRole = Extract<Role, "Corporate" | "Estate">

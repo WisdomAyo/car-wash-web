@@ -17,13 +17,15 @@ const keyOf = (path: string, query?: Query): QueryKey => [path, query ?? {}]
 export function useResource<T>(
   path: string | null,
   query?: Query,
-  options: { enabled?: boolean; refetchInterval?: number } = {},
+  options: { enabled?: boolean; refetchInterval?: number; background?: boolean } = {},
 ) {
   return useQuery({
     queryKey: keyOf(path ?? "", query),
     queryFn: async () => (await api<One<T>>(path!, { query })).data,
     enabled: path !== null && (options.enabled ?? true),
     refetchInterval: options.refetchInterval,
+    // Opt in for things that must be noticed even when the tab is hidden (notifications).
+    refetchIntervalInBackground: options.background,
   })
 }
 

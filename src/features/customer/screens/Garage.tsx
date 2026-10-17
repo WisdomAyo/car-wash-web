@@ -2,19 +2,22 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { AsyncList, Empty, PageHeader, Panel, Pill, Plate, Table, Two } from "@/components/app/kit"
+import { AsyncList, Empty, PageHeader, Panel, Pill, Table, Two } from "@/components/app/kit"
 import { ConfirmDialog } from "@/components/app/overlays"
-import { Icon } from "@/components/Visuals"
+import { Icon, Plate } from "@/components/Visuals"
 import { api } from "@/lib/api/client"
 import { useAction, useList } from "@/lib/api/hooks"
 import type { Place, Vehicle } from "@/lib/api/types"
 import { humanise } from "@/lib/format"
 import PlaceForm from "@/features/shared/PlaceForm"
 import VehicleForm from "@/features/shared/VehicleForm"
+import { useCustomerUi } from "../CustomerUi"
+import { VehicleArt, PageHeading } from "../parts"
 
 export function Vehicles() {
+  const { openModal } = useCustomerUi()
   const list = useList<Vehicle>("/vehicles")
-  const [editing, setEditing] = useState<Vehicle | "new" | null>(null)
+  const [editing, setEditing] = useState<Vehicle | null>(null)
   const [removing, setRemoving] = useState<Vehicle | null>(null)
   const remove = useAction((v: Vehicle) => api(`/vehicles/${v.id}`, { method: "DELETE" }), {
     invalidate: ["/vehicles"],
@@ -24,46 +27,52 @@ export function Vehicles() {
 
   return (
     <>
-      <PageHeader
-        eyebrow="YOUR VEHICLE. OUR RESPONSIBILITY."
-        title="My vehicles"
-        description="Your plate links every wash to the right car."
-        action={
-          <button className="primary" onClick={() => setEditing("new")}>
-            <Icon name="plus" size={17} /> Add a vehicle
-          </button>
+      <PageHeading title="My vehicles" />
+      <div className="section-heading">
+        <h3>Your vehicles, cared for.</h3>
+        <button className="secondary" onClick={() => openModal("vehicle")}>
+          <Icon name="plus" />
+          Add vehicle
+        </button>
+      </div>
+      <AsyncList
+        list={list}
+        empty={
+          <Empty icon="car" title="No vehicles yet." action={<button className="primary" onClick={() => openModal("vehicle")}>Add your first vehicle</button>}>
+            Add the car you want washed. You need its number plate, make, model and colour.
+          </Empty>
         }
-      />
-      <Panel>
-        <AsyncList
-          list={list}
-          empty={
-            <Empty icon="car" title="No vehicles yet." action={<button className="primary" onClick={() => setEditing("new")}>Add your first vehicle</button>}>
-              Add the car you want washed. You need its number plate, make, model and colour.
-            </Empty>
-          }
-        >
-          {(items) => (
-            <Table
-              rows={items}
-              rowKey={(v) => v.id}
-              columns={[
-                { header: "Vehicle", cell: (v) => <Two top={`${v.make} ${v.model}`} bottom={v.colour} /> },
-                { header: "Plate", cell: (v) => <Plate value={v.plate} /> },
-                { header: "Type", cell: (v) => (v.type === "suv" ? "SUV" : humanise(v.type)) },
-                { header: "", className: "right", cell: (v) => (
-                  <span className="kit-row" style={{ justifyContent: "flex-end" }}>
-                    <Link className="kit-link" href={`/workspace/customer/vehicles/${v.id}`}>Wash history</Link>
-                    <button className="kit-link" onClick={() => setEditing(v)}>Edit</button>
-                    <button className="kit-link kit-danger" onClick={() => setRemoving(v)}>Remove</button>
-                  </span>
-                ) },
-              ]}
-            />
-          )}
-        </AsyncList>
-      </Panel>
-      {editing && <VehicleForm vehicle={editing === "new" ? undefined : editing} onClose={() => setEditing(null)} />}
+      >
+        {(items) => (
+          <div className="vehicle-page-grid">
+            {items.map((v) => (
+              <div className="vehicle-card" key={v.id}>
+                <VehicleArt vehicle={v} />
+                <h3>
+                  {v.make} {v.model}
+                </h3>
+                <Plate>{v.plate}</Plate>
+                <p>
+                  Registered vehicle · {v.type === "suv" ? "SUV" : humanise(v.type)} · {v.colour}
+                </p>
+                <div className="vehicle-actions">
+                  <button className="primary" onClick={() => openModal({ name: "booking", vehicleId: v.id })}>
+                    Book a wash
+                  </button>
+                  <Link className="secondary" href={`/workspace/customer/vehicles/${v.id}`}>
+                    View Passport
+                  </Link>
+                </div>
+                <div className="vehicle-footer">
+                  <button onClick={() => setEditing(v)}>Edit details</button>
+                  <button onClick={() => setRemoving(v)}>Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </AsyncList>
+      {editing && <VehicleForm vehicle={editing} onClose={() => setEditing(null)} />}
       {removing && (
         <ConfirmDialog
           title="Remove this vehicle?"

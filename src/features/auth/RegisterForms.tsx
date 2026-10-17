@@ -9,6 +9,7 @@ import { api } from "@/lib/api/client"
 import { startSession } from "@/lib/auth"
 import { workspaceHref, type Role } from "@/lib/roles"
 import { AuthField, fieldProblem, formMessage, PasswordInput } from "./fields"
+import { safeNext } from "./LoginForm"
 
 /** Runs a sign-up call, keeping the pending/error state every form here needs. */
 function useSubmit<T>(run: () => Promise<T>, done: (result: T) => void) {
@@ -36,7 +37,7 @@ const Problem = ({ error }: { error: unknown }) =>
   ) : null
 
 /** A customer's account: email and password first, a phone number if they want one. */
-export function CustomerRegisterForm({ referral }: { referral?: string }) {
+export function CustomerRegisterForm({ referral, next }: { referral?: string; next?: string }) {
   const router = useRouter()
   const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", referral_code: referral ?? "" })
   const [agreed, setAgreed] = useState(false)
@@ -54,7 +55,7 @@ export function CustomerRegisterForm({ referral }: { referral?: string }) {
       }),
     (response) => {
       startSession("customer", response)
-      router.push(workspaceHref("Customer"))
+      router.push(safeNext(next) ?? workspaceHref("Customer"))
     },
   )
 

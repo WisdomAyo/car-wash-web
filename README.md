@@ -4,7 +4,7 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4.
 
 ```bash
 npm install
-npm run dev          # http://localhost:3000
+npm run dev          # http://localhost:3000 (set NEXT_PUBLIC_API_URL in .env.local, e.g. http://localhost:8000/api/v1)
 npm run build && npm start
 npm run lint         # ESLint
 npm run typecheck    # tsc --noEmit
@@ -24,11 +24,13 @@ src/
     fonts/                 Self-hosted variable fonts (see "Fonts").
   features/                One folder per product area. Import from here, not across features' internals.
     marketing/             home/ (5 audience pages) · pages/ · components/ · scenes/ (Lagos film) · content/
-    auth/                  Sign-in screens (demo flow)
-    customer/              Driver verdict link and the customer workspace demo
-    workspace/             "Not connected yet" page for screens that need the backend
-    partners/              Corporate and estate portal
-    support/               Customer-care chat
+    auth/                  Sign in, register, recover, email links (real API)
+    customer/              Personal space: dashboard, garage, bookings, passport, plans, rewards, dialogs; driver verdict link
+    partners/              Corporate and estate portals (fleet hero, shine board, calendar, estate hero, team cards, charts)
+    washman/               Washman workspace and applicant onboarding
+    admin/                 Operations screens by role (dispatch, finance, support, super admin)
+    shared/                Pieces used by several spaces (booking detail, payments, tickets, forms)
+    support/               The chat assistant (answers from the help centre, hands over to the team)
   components/              Shared UI: ui/ (Button, ButtonLink, Heading, Input), Brand, Visuals, Motion, layout/
   hooks/  lib/             Small shared helpers (roles + route helpers live in lib/roles.ts)
   styles/                  Global stylesheets (see "Styling")
@@ -61,11 +63,21 @@ Inter and Plus Jakarta Sans are self-hosted as subsetted variable fonts in `src/
 every Unicode subset, and one `₦` made the browser download ~100 KB of extra fonts before first paint.
 To regenerate or add characters, edit `scripts/subset-fonts.py` and re-run it (instructions inside).
 
+## Talking to the API
+
+Everything signed-in is wired to the Laravel API in `../api` through `src/lib/api/`: `client.ts` (bearer token, error
+envelope, idempotency keys), `hooks.ts` (TanStack Query: `useResource`, `useList`, `useAction`), `types.ts`. The session
+is kept in the browser (`lib/session.ts`); each space guards itself with `RequireSession`.
+
+Design rule: **the original screens keep their markup and graphics; only the data is real.** The dashboards use the
+global `styles/*.css` classes (`.hero`, `.stats-row`, `.water-line`, `.fleet-hero`, …). Screens that had no original
+design use the `kit-*` classes in `styles/app-kit.css`, which follow the same look.
+
+Public deep links: `/v/[token]` (one-tap verdict by signed link), `/estate/[code]` (what an estate's QR code opens),
+`/confirm` (paste a verdict link), `/pay/return` (after the payment gateway).
+
 ## Known limits
 
-- **No backend is connected.** Supabase was removed. `/account` and the staff workspaces (washman, dispatcher,
-  finance, support, super admin) show the "not connected yet" page, and sign-in is a demo flow. The Laravel
-  API in `../api` is the intended backend; wire it in through a small API client plus a query library, then
-  replace `features/workspace/NotConnected.tsx` with the real screens.
-- The customer, corporate and estate workspaces are sample-data prototypes and need no sign-in.
-- The workspace dock (`components/layout/ExperienceDock.tsx`) is a prototype navigation aid, not access control.
+- The assistant's Claude call needs `ANTHROPIC_API_KEY` on the API; without it the extractive (no-AI) model answers
+  from the help centre, which is what the tests exercise.
+- The workspace dock (`components/layout/ExperienceDock.tsx`) is a navigation aid, not access control.

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Icon } from "@/components/Visuals"
 import ButtonLink from "@/components/ui/ButtonLink"
 import { authApi } from "@/lib/api/auth"
-import { authHref, isAdminRole, roles, type AuthMode, type Role } from "@/lib/roles"
+import { authHref, isAdminRole, publicAuthRoles, staffLoginHref, washmanApplyHref, type AuthMode, type Role } from "@/lib/roles"
 import AuthFrame from "./AuthFrame"
 import { AuthField, fieldProblem, formMessage } from "./fields"
 import LoginForm from "./LoginForm"
@@ -68,13 +68,25 @@ export default function Auth({
               href: authHref(register ? "login" : "register", role),
             }
       }
+      footer={
+        <div className="auth-alt-links">
+          <ButtonLink href={washmanApplyHref}>
+            Want to wash with us? <b>Become a washman</b>
+          </ButtonLink>
+          <ButtonLink href={staffLoginHref()}>
+            Field team or operations? <b>Staff sign-in</b>
+          </ButtonLink>
+        </div>
+      }
     >
-      <div className="auth-role-tabs">
-        {roles.map((r) => (
+      <div className="auth-role-tabs" role="tablist" aria-label="Who is signing in">
+        {publicAuthRoles.map((r) => (
           <button
             type="button"
+            role="tab"
+            aria-selected={r === role}
             key={r}
-            className={r === role || (r === "Super admin" && admin) ? "selected" : ""}
+            className={r === role ? "selected" : ""}
             onClick={() => setRole(r)}
           >
             {tabLabel(r)}
@@ -84,7 +96,7 @@ export default function Auth({
       {mode === "login" && <LoginForm key={role} role={role} next={next} expired={expired} />}
       {mode === "register" && (
         <>
-          {audience === "person" && <CustomerRegisterForm key={role} referral={referral} />}
+          {audience === "person" && <CustomerRegisterForm key={role} referral={referral} next={next} />}
           {audience === "staff" && <WashmanApplyForm key={role} />}
           {audience === "org" && <OrganisationRequestForm key={role} role={role as "Corporate" | "Estate"} />}
           {audience === "admin" && (

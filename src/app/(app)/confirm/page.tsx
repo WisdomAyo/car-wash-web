@@ -3,4 +3,6 @@ import Confirmer from "@/features/customer/Confirmer"
 
 export const metadata: Metadata = { title: "Confirm your wash" }
 
-export default Confirmer
+export default function Page() {
+  return <Confirmer />
+}

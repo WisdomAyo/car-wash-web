@@ -1,15 +1,18 @@
+"use client"
+
 import type { ReactNode } from "react"
 import Brand from "@/components/Brand"
 import ButtonLink from "@/components/ui/ButtonLink"
 import { CarArt, Icon } from "@/components/Visuals"
 
-/** The two-column sign-in layout: the story on the left, whatever form is needed on the right. */
+/** The two-column sign-in layout: the non-scrollable story showcase on the left, whatever form is needed on the right. */
 export default function AuthFrame({
   eyebrow,
   title,
   description,
   children,
   topLink,
+  footer,
 }: {
   eyebrow: string
   title: string
@@ -17,6 +20,8 @@ export default function AuthFrame({
   children: ReactNode
   /** The "New to Go-Wash? Get started" link at the top right. */
   topLink?: { text: string; label: string; href: string }
+  /** Secondary links shown under the sign-in / get-started card. */
+  footer?: ReactNode
 }) {
   return (
     <div className="auth-page">
@@ -36,6 +41,7 @@ export default function AuthFrame({
             Professional mobile car washing for homes, offices and approved
             outdoor spaces across Nigeria.
           </p>
+
           <div className="auth-car" aria-label="Five vehicle illustrations">
             <div className="auth-car-rail">
               <div className="auth-car-loop">
@@ -55,6 +61,7 @@ export default function AuthFrame({
               </div>
             </div>
           </div>
+
           <div className="auth-story-proof">
             <Icon name="shield" size={20} />
             <span>
@@ -77,8 +84,11 @@ export default function AuthFrame({
             <Icon name="arrow" size={15} /> Back to Go-Wash
           </ButtonLink>
           {topLink && (
-            <span>
-              {topLink.text} <ButtonLink href={topLink.href}>{topLink.label}</ButtonLink>
+            <span className="auth-switch">
+              <span className="auth-switch-text">{topLink.text}</span>
+              <ButtonLink className="auth-switch-link" href={topLink.href}>
+                {topLink.label} <Icon name="arrow" size={14} />
+              </ButtonLink>
             </span>
           )}
         </div>
@@ -87,6 +97,15 @@ export default function AuthFrame({
           <h1>{title}</h1>
           {description && <p className="auth-description">{description}</p>}
           {children}
+          {topLink && (
+            <div className="auth-switch-card">
+              <span>{topLink.text}</span>
+              <ButtonLink className="auth-switch-card-link" href={topLink.href}>
+                {topLink.label} <Icon name="arrow" size={15} />
+              </ButtonLink>
+            </div>
+          )}
+          {footer}
           <div className="auth-security">
             <Icon name="shield" size={15} /> Your details, treated with care.
           </div>
@@ -99,3 +118,4 @@ export default function AuthFrame({
     </div>
   )
 }
+

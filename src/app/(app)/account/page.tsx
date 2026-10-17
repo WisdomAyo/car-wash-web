@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import NotConnected from "@/features/workspace/NotConnected"
+import AccountRedirect from "@/features/workspace/AccountRedirect"
 
 export const metadata: Metadata = { title: "Your account" }
 
 export default function AccountPage() {
-  return <NotConnected title="Your account is on its way." />
+  return <AccountRedirect />
 }

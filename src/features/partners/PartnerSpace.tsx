@@ -12,7 +12,7 @@ import ConsentGate from "@/features/shared/ConsentGate"
 
 export type PartnerKind = "corporate" | "estate"
 
-type PartnerContext = { org: Organisation; base: string; role: NonNullable<Organisation["my_role"]>; manages: boolean }
+type PartnerContext = { org: Organisation; base: string; role: NonNullable<Organisation["my_role"]>; manages: boolean; firstName: string }
 const Context = createContext<PartnerContext | null>(null)
 
 /** The organisation this portal is open on, and what the signed-in person is in it. */
@@ -20,6 +20,12 @@ export const usePartner = () => {
   const value = useContext(Context)
   if (!value) throw new Error("usePartner must be used inside PartnerSpace")
   return value
+}
+
+/** "Ngozi Eze" -> "Ngozi"; "Mr Adewale Bello" -> "Mr Adewale". */
+const greetingName = (name: string) => {
+  const [first = "", second] = name.trim().split(/\s+/)
+  return /^(mr|mrs|ms|miss|dr|chief|engr|prof|alhaji|alhaja)\.?$/i.test(first) && second ? `${first} ${second}` : first
 }
 
 const menus = (kind: PartnerKind, base: string, manages: boolean): NavGroup[] =>
@@ -32,6 +38,7 @@ const menus = (kind: PartnerKind, base: string, manages: boolean): NavGroup[] =>
             { label: "Vehicles", href: `${base}/vehicles`, icon: "car" },
             { label: "Wash schedule", href: `${base}/bookings`, icon: "calendar" },
             { label: "Active washes", href: `${base}/jobs`, icon: "drop" },
+            { label: "Wash records", href: `${base}/records`, icon: "shield" },
           ],
         },
         {
@@ -94,13 +101,13 @@ function Frame({ kind, session, children }: { kind: PartnerKind; session: Parame
   }
 
   const role = org.my_role!
-  const manages = role === "owner" || role === "manager"
+  const manages = role === "owner" || role === "manager" || role === "estate_manager"
   return (
-    <Context.Provider value={{ org, base, role, manages }}>
+    <Context.Provider value={{ org, base, role, manages, firstName: greetingName(session.user.name) }}>
       <PortalShell
         session={session}
         title={org.name}
-        subtitle={`${kind === "corporate" ? "Corporate" : "Estate"} portal · ${role}`}
+        subtitle={`${kind === "corporate" ? "Corporate" : "Estate"} portal · ${role.replace("_", " ")}`}
         icon={kind === "corporate" ? "car" : "pin"}
         groups={menus(kind, base, manages)}
         root={base}

@@ -1,15 +1,15 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { Async, AsyncList, Empty, Facts, Metrics, PageHeader, Panel, Pill, Table, Two } from "@/components/app/kit"
+import { Async, AsyncList, Empty, Facts, PageHeader, Panel, Pill, Table, Two } from "@/components/app/kit"
 import { ConfirmDialog, Modal } from "@/components/app/overlays"
 import { Icon } from "@/components/Visuals"
-import { api, idempotencyKey } from "@/lib/api/client"
+import { api } from "@/lib/api/client"
 import { useAction, useItems, useList, useResource } from "@/lib/api/hooks"
-import type { Payment, Plan, Receipt, Referrals, Subscription } from "@/lib/api/types"
+import type { Plan, Receipt, Referrals, Subscription } from "@/lib/api/types"
 import { day, naira, stamp } from "@/lib/format"
-import { startPayment } from "@/features/shared/payments"
+import { useCustomerUi } from "../CustomerUi"
+import { PageHeading } from "../parts"
 
 export function Receipts() {
   const list = useList<Receipt>("/receipts")
@@ -53,103 +53,176 @@ export function Receipts() {
   )
 }
 
+/** Plans on offer, with the customer's own subscriptions above them. */
 export function Subscriptions() {
-  const router = useRouter()
+  const { openModal } = useCustomerUi()
   const subs = useList<Subscription>("/subscriptions")
   const plans = useItems<Plan>("/subscription-plans")
   const [cancelling, setCancelling] = useState<Subscription | null>(null)
 
-  const buy = useAction(
-    async (plan: Plan) => api<{ subscription: Subscription; payment: Payment }>("/subscriptions", { method: "POST", headers: { "Idempotency-Key": idempotencyKey() }, body: { plan_id: plan.id, auto_renew: true } }),
-    { invalidate: ["/subscriptions"], onSuccess: ({ payment }) => startPayment(payment, (url) => router.push(url)) },
-  )
   const autoRenew = useAction((v: { s: Subscription; enabled: boolean }) => api(`/subscriptions/${v.s.id}/auto-renew`, { method: "PUT", body: { enabled: v.enabled } }), { invalidate: ["/subscriptions"], success: "Saved." })
   const cancel = useAction((s: Subscription) => api(`/subscriptions/${s.id}/cancel`, { method: "POST" }), { invalidate: ["/subscriptions"], success: "Subscription cancelled.", onSuccess: () => setCancelling(null) })
 
   const individual = plans.items.filter((p) => p.scope === "individual" && p.is_active)
+  const current = subs.items.find((s) => ["active", "grace"].includes(s.status))
+  const featured = current ? individual.findIndex((p) => p.id === current.plan.id) : Math.min(1, individual.length - 1)
+
   return (
     <>
-      <PageHeader eyebrow="WASH MORE, PAY LESS" title="Subscriptions" description="Prepay a bundle of washes. Each wash you book uses one credit." />
-      <Panel title="Your subscriptions">
-        <AsyncList list={subs} empty={<Empty icon="card" title="No subscription yet.">Choose a plan below to start saving.</Empty>}>
-          {(items) => (
-            <div className="kit-list">
-              {items.map((s) => (
-                <div className="kit-item" key={s.id}>
-                  <span className="kit-icon-tile"><Icon name="card" size={18} /></span>
-                  <div className="grow">
-                    <h4>{s.plan.name} <Pill status={s.status} /></h4>
-                    <p>{s.washes_remaining} of {s.washes_included} washes left{s.ends_at ? ` · renews or ends ${day(s.ends_at)}` : ""}</p>
-                  </div>
-                  {["active", "grace"].includes(s.status) && (
-                    <>
-                      <label className="kit-chip"><input type="checkbox" checked={s.auto_renew} onChange={(e) => autoRenew.run({ s, enabled: e.target.checked })} /> Auto-renew</label>
-                      <button className="secondary kit-danger" onClick={() => setCancelling(s)}>Cancel</button>
-                    </>
-                  )}
+      <PageHeading title="Subscriptions" />
+      <section className="passport-banner">
+        <Icon name="drop" size={45} />
+        <div>
+          <div className="eyebrow">LESS PLANNING. MORE SHINE.</div>
+          <h2>Your clean-car routine, sorted.</h2>
+          <p>Monthly care delivered to your driveway. No wash-bay detours.</p>
+        </div>
+      </section>
+
+      {subs.items.length > 0 && (
+        <section className="content-panel">
+          <div className="section-heading">
+            <h3>Your subscriptions</h3>
+            <span className="status-badge">Each wash uses one credit</span>
+          </div>
+          {subs.items.map((s) => (
+            <div className="history-row" key={s.id}>
+              <span className="stat-icon">
+                <Icon name="card" />
+              </span>
+              <div>
+                <h4>
+                  {s.plan.name} <Pill status={s.status} />
+                </h4>
+                <p>
+                  {s.washes_remaining} of {s.washes_included} washes left{s.ends_at ? ` · ${s.auto_renew ? "renews" : "ends"} ${day(s.ends_at)}` : ""}
+                </p>
+              </div>
+              {["active", "grace"].includes(s.status) && (
+                <>
+                  <label className="checkbox-label" style={{ margin: 0 }}>
+                    <input type="checkbox" checked={s.auto_renew} onChange={(e) => autoRenew.run({ s, enabled: e.target.checked })} /> Auto-renew
+                  </label>
+                  <button className="secondary" onClick={() => setCancelling(s)}>
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
+      <Async query={plans} empty={<Empty icon="card" title="No plans on sale right now." />} isEmpty={() => individual.length === 0}>
+        {() => (
+          <div className="service-grid">
+            {individual.map((p, i) => {
+              const mine = current?.plan.id === p.id
+              return (
+                <div className={`service-card ${i === featured ? "featured" : ""}`} key={p.id}>
+                  <span className="popular-tag">{mine ? "YOUR CURRENT PLAN" : `${p.washes_included} WASHES${p.months > 1 ? ` / ${p.months} MONTHS` : " / MONTH"}`}</span>
+                  <h3>{p.name}</h3>
+                  <p>
+                    {p.washes_included} professional washes. Three proofs per wash. One less thing to worry about.
+                    {p.discount_percent ? ` ${p.discount_percent}% off.` : ""}
+                  </p>
+                  <h2>
+                    {naira(p.price_kobo)}
+                    <small className="per-month"> / {p.months > 1 ? `${p.months} months` : "month"}</small>
+                  </h2>
+                  <button className={mine ? "secondary" : "primary"} onClick={() => openModal({ name: "plan", id: p.id })}>
+                    {mine ? "Manage plan" : "Explore plan"}
+                    <Icon name="arrow" size={16} />
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </AsyncList>
-      </Panel>
-      <Panel title="Plans">
-        <Async query={plans} empty={<Empty icon="card" title="No plans on sale right now." />} isEmpty={() => individual.length === 0}>
-          {() => (
-            <div className="kit-grid cols-3" style={{ marginBottom: 0 }}>
-              {individual.map((p) => (
-                <article key={p.id} className="portal-panel" style={{ marginBottom: 0 }}>
-                  <h3 className="kit-panel-title">{p.name}</h3>
-                  <p className="kit-muted">{p.washes_included} washes over {p.months} month{p.months > 1 ? "s" : ""}{p.discount_percent ? ` · ${p.discount_percent}% off` : ""}</p>
-                  <h3 style={{ fontSize: 28, margin: "12px 0" }}>{naira(p.price_kobo)}</h3>
-                  <button className="primary kit-wide" onClick={() => buy.run(p)} disabled={buy.pending}>Choose this plan</button>
-                </article>
-              ))}
-            </div>
-          )}
-        </Async>
-      </Panel>
+              )
+            })}
+          </div>
+        )}
+      </Async>
       {cancelling && <ConfirmDialog title="Cancel this subscription?" description="Unused credits stay until the end of the paid period. It will not renew." confirmLabel="Cancel subscription" danger pending={cancel.pending} onConfirm={() => cancel.run(cancelling)} onClose={() => setCancelling(null)} />}
     </>
   )
 }
 
 export function ReferralsScreen() {
+  const { notify } = useCustomerUi()
   const referrals = useResource<Referrals>("/referrals")
   return (
     <>
-      <PageHeader eyebrow="SHARE THE SHINE" title="Referrals & rewards" description="Invite a friend. They get a discount on their first wash; you get one when it is done." />
+      <PageHeading title="Referrals & rewards" />
       <Async query={referrals}>
         {(r) =>
           !r.enabled ? (
-            <Empty icon="gift" title="Referrals are paused." >Check back soon.</Empty>
+            <Empty icon="gift" title="Referrals are paused.">Check back soon.</Empty>
           ) : (
             <>
-              <Metrics items={[
-                { label: "Friends invited", value: r.stats.invited, note: `${r.stats.qualified} completed a first wash`, icon: "users" },
-                { label: "Available to use", value: naira(r.stats.available_kobo), note: "Applied automatically to your next booking", icon: "gift" },
-                { label: "On the way", value: naira(r.stats.pending_kobo), note: "Once a friend's first wash is done", icon: "clock" },
-                { label: "Already used", value: naira(r.stats.spent_kobo), icon: "check" },
-              ]} />
-              <Panel title="Your code" description={`A friend gets ${naira(r.offer.friend_gets_kobo)} off their first wash and you get ${naira(r.offer.you_get_kobo)} off. Rewards last ${r.offer.valid_days} days.`}>
-                <div className="kit-row">
-                  <span className="kit-mono" style={{ fontSize: 22, letterSpacing: 3, fontWeight: 700 }}>{r.code}</span>
-                  <CopyButton text={r.share_url} label="Copy invite link" />
+              <section className="referral-page">
+                <div className="large-gift">
+                  <Icon name="gift" size={48} />
                 </div>
-                <p className="kit-faint" style={{ marginTop: 8 }}>{r.share_url}</p>
-              </Panel>
-              <Panel title="Your rewards">
-                {r.rewards.length === 0 ? (
-                  <Empty icon="gift" title="No rewards yet.">Share your code to earn your first one.</Empty>
-                ) : (
-                  <Table rows={r.rewards} rowKey={(x) => x.id} columns={[
-                    { header: "Reward", cell: (x) => <Two top={x.type === "welcome" ? "Welcome reward" : "Thank-you for inviting"} bottom={x.friend?.name} /> },
-                    { header: "Status", cell: (x) => <Pill status={x.status} /> },
-                    { header: "Valid until", cell: (x) => (x.expires_at ? day(x.expires_at) : "—") },
-                    { header: "Value", className: "right", cell: (x) => <span className="kit-num">{naira(x.amount_kobo)}</span> },
-                  ]} />
-                )}
-              </Panel>
+                <div className="eyebrow">SPREAD A LITTLE SHINE</div>
+                <h2>Clean cars. Happy friends.</h2>
+                <p>
+                  Your friend gets {naira(r.offer.friend_gets_kobo)} off their first wash.
+                  <br />
+                  You get {naira(r.offer.you_get_kobo)} in wash credit when they book.
+                </p>
+                <div className="referral-code">
+                  <span>{r.code}</span>
+                  <button
+                    className="primary"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(r.share_url)
+                        notify("Your invite link has been copied.")
+                      } catch {
+                        notify(`Your code is ${r.code}.`)
+                      }
+                    }}
+                  >
+                    Copy invite link <Icon name="arrow" size={16} />
+                  </button>
+                </div>
+                <div className="referral-metrics">
+                  <div>
+                    <strong>{r.stats.invited}</strong>
+                    <span>Friends referred</span>
+                  </div>
+                  <div>
+                    <strong>{naira(r.stats.earned_kobo)}</strong>
+                    <span>Credit earned</span>
+                  </div>
+                  <div>
+                    <strong>{naira(r.stats.available_kobo)}</strong>
+                    <span>Available credit</span>
+                  </div>
+                </div>
+              </section>
+              {r.rewards.length > 0 && (
+                <section className="content-panel">
+                  <div className="section-heading">
+                    <h3>Your rewards</h3>
+                    <span className="status-badge">Valid for {r.offer.valid_days} days</span>
+                  </div>
+                  {r.rewards.map((x) => (
+                    <div className="history-row" key={x.id}>
+                      <span className="stat-icon">
+                        <Icon name="gift" />
+                      </span>
+                      <div>
+                        <h4>{x.type === "welcome" ? "Welcome reward" : "Thank-you for inviting"}</h4>
+                        <p>
+                          {x.friend?.name ?? "A friend"}
+                          {x.expires_at ? ` · valid until ${day(x.expires_at)}` : ""}
+                        </p>
+                      </div>
+                      <Pill status={x.status} />
+                      <strong>{naira(x.amount_kobo)}</strong>
+                    </div>
+                  ))}
+                </section>
+              )}
             </>
           )
         }
@@ -157,24 +230,3 @@ export function ReferralsScreen() {
     </>
   )
 }
-
-export function CopyButton({ text, label }: { text: string; label: string }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <button
-      className="secondary"
-      onClick={async () => {
-        try {
-          await navigator.clipboard.writeText(text)
-          setCopied(true)
-          window.setTimeout(() => setCopied(false), 2500)
-        } catch {
-          // clipboard blocked: the text is on screen to select
-        }
-      }}
-    >
-      <Icon name={copied ? "check" : "copy"} size={15} /> {copied ? "Copied" : label}
-    </button>
-  )
-}
-

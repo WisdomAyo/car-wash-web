@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api/client"
 import { Loading } from "@/components/app/kit"
 import { sessionStore, deviceId, type Session, type SessionKind, type SessionUser } from "@/lib/session"
-import type { Role } from "@/lib/roles"
+import { isAdminRole, staffLoginHref, type Role } from "@/lib/roles"
 
 /** `undefined` until the browser has read its stored session; then the session or `null`. */
 export function useSession(): Session | null | undefined {
@@ -61,8 +61,11 @@ export function useSignOut() {
 }
 
 /** The sign-in URL for the audience a path belongs to. */
-export const loginHref = (role: Role, next?: string) =>
-  `/auth/login?role=${encodeURIComponent(role)}${next ? `&next=${encodeURIComponent(next)}` : ""}`
+export const loginHref = (role: Role, next?: string) => {
+  if (role === "Washman") return staffLoginHref({ next })
+  if (isAdminRole(role)) return staffLoginHref({ team: "operations", next })
+  return `/auth/login?role=${encodeURIComponent(role)}${next ? `&next=${encodeURIComponent(next)}` : ""}`
+}
 
 const kindLabels: Record<SessionKind, string> = {
   customer: "customer",
@@ -94,7 +97,8 @@ export function RequireSession({
   useEffect(() => {
     if (session === null) {
       const reason = sessionStore.endedBecause()
-      router.replace(loginHref(loginRole, pathname) + (reason ? "&expired=1" : ""))
+      const href = loginHref(loginRole, pathname)
+      router.replace(reason ? `${href}${href.includes("?") ? "&" : "?"}expired=1` : href)
     }
   }, [session, router, pathname, loginRole])
 

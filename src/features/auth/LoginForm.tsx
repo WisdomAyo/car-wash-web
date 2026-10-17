@@ -12,7 +12,7 @@ import { deviceId } from "@/lib/session"
 import { AuthField, fieldProblem, formMessage, PasswordInput } from "./fields"
 
 /** Only paths inside this site are followed after sign-in (never a link to somewhere else). */
-const safeNext = (next?: string) => (next && next.startsWith("/workspace") ? next : undefined)
+export const safeNext = (next?: string) => (next && /^\/(workspace|estate\/)/.test(next) ? next : undefined)
 
 /** Where a customer-account holder should land: the company/estate portal they asked for, if they have one. */
 async function landingFor(role: Role): Promise<{ href: string; note?: string }> {
